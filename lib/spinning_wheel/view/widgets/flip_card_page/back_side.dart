@@ -29,7 +29,7 @@ class BackSide extends StatelessWidget {
             waveColor: Colors.yellow,
             boxBackgroundColor: const Color(0xff007f5f),
             textStyle: const TextStyle(
-              fontSize: 40,
+              fontSize: 53,
               fontWeight: FontWeight.bold,
             ),
           ),

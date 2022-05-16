@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,18 +8,22 @@ class Carousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _angles = context.select((SpinningWheelCubit cubit) => cubit.state);
+    final _angles =
+        context.select((SpinningWheelCubit cubit) => cubit.state.angles);
+    final _heights =
+        context.select((SpinningWheelCubit cubit) => cubit.state.heights);
+    final _widths =
+        context.select((SpinningWheelCubit cubit) => cubit.state.widths);
+
     return NotificationListener<ScrollNotification>(
       onNotification: (notification) {
         if (notification is ScrollEndNotification) {
-          //TODO: Add behaviour when the scrolling ends
           final data = notification.metrics as FixedExtentMetrics;
-          var rotateIndex = data.itemIndex % 8;
-          if (_angles[rotateIndex] == pi / 2) {
-            context.read<SpinningWheelCubit>().rotateOut(rotateIndex);
-          } else {
-            context.read<SpinningWheelCubit>().rotateIn(rotateIndex);
-          }
+          final itemIndex = data.itemIndex % 8;
+          BlocProvider.of<SpinningWheelCubit>(context).rotateIn(itemIndex);
+          // BlocProvider.of<SpinningWheelCubit>(context).zoomIn(itemIndex);
+          // BlocProvider.of<SpinningWheelCubit>(context).zoomOut(itemIndex);
+          // BlocProvider.of<SpinningWheelCubit>(context).rotateOut(itemIndex);
           return true;
         }
         return false;
@@ -36,15 +38,16 @@ class Carousel extends StatelessWidget {
               children: [
                 Center(
                   child: AnimatedContainer(
+                    key: ValueKey('$index'),
                     transformAlignment: Alignment.center,
                     duration: const Duration(milliseconds: 2000),
-                    height: double.infinity,
+                    height: _heights[index],
                     transform: Matrix4.rotationZ(_angles[index]),
                     curve: Curves.bounceOut,
+                    width: _widths[index],
                     child: Image.asset(
                       'assets/cards/0${index + 1}.png',
                       fit: BoxFit.fill,
-                      width: 280,
                     ),
                   ),
                 ),

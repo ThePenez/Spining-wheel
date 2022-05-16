@@ -14,7 +14,6 @@ class HeaderLayout extends StatelessWidget {
         GestureDetector(
           child: PlatformIconButton(
             onPressed: () {
-              print('Clicked');
               Navigator.push<MaterialPageRoute>(
                 context,
                 PageTransition(
