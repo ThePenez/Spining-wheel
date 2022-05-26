@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,16 +16,16 @@ class Carousel extends StatelessWidget {
         context.select((SpinningWheelCubit cubit) => cubit.state.heights);
     final _widths =
         context.select((SpinningWheelCubit cubit) => cubit.state.widths);
+    final _physics =
+        context.select((SpinningWheelCubit cubit) => cubit.state.physics);
 
     return NotificationListener<ScrollNotification>(
       onNotification: (notification) {
         if (notification is ScrollEndNotification) {
           final data = notification.metrics as FixedExtentMetrics;
           final itemIndex = data.itemIndex % 8;
-          BlocProvider.of<SpinningWheelCubit>(context).rotateIn(itemIndex);
-          // BlocProvider.of<SpinningWheelCubit>(context).zoomIn(itemIndex);
-          // BlocProvider.of<SpinningWheelCubit>(context).zoomOut(itemIndex);
-          // BlocProvider.of<SpinningWheelCubit>(context).rotateOut(itemIndex);
+          context.read<SpinningWheelCubit>().rotateIn(itemIndex);
+          context.read<SpinningWheelCubit>().zoomIn(itemIndex);
           return true;
         }
         return false;
@@ -61,7 +63,7 @@ class Carousel extends StatelessWidget {
           ),
         ),
         //controller: FixedExtentScrollController(),
-        physics: const FixedExtentScrollPhysics(),
+        physics: _physics,
         //magnification: 1.8,
         perspective: 0.001,
         //useMagnifier: true,

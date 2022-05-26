@@ -9,10 +9,12 @@ abstract class SpinningWheelState extends Equatable {
     required this.angles,
     required this.heights,
     required this.widths,
+    required this.physics,
   });
   final List<double> angles;
   final List<double> heights;
   final List<double> widths;
+  final ScrollPhysics physics;
 
   @override
   List<Object> get props => [];
@@ -23,19 +25,27 @@ class StartState extends SpinningWheelState {
     required this.angles,
     required this.heights,
     required this.widths,
-  }) : super(angles: angles, heights: heights, widths: widths);
+    required this.physics,
+  }) : super(
+          angles: angles,
+          heights: heights,
+          widths: widths,
+          physics: physics,
+        );
   // ignore: annotate_overrides, overridden_fields
   final List<double> angles;
   // ignore: annotate_overrides, overridden_fields
   final List<double> heights;
   // ignore: annotate_overrides, overridden_fields
   final List<double> widths;
+  // ignore: annotate_overrides, overridden_fields
+  final ScrollPhysics physics;
 
   @override
-  List<Object> get props => [angles];
+  List<Object> get props => [angles, heights, widths, physics];
   @override
   String toString() =>
-      'Starting state { angles: $angles, heights: $heights, widths: $widths}';
+      'Starting state { angles: $angles, heights: $heights, widths: $widths, physics: ${physics.toString()}}';
 }
 
 class RotatedState extends SpinningWheelState {
@@ -43,19 +53,28 @@ class RotatedState extends SpinningWheelState {
     required this.angles,
     required this.heights,
     required this.widths,
-  }) : super(angles: angles, heights: heights, widths: widths);
+    required this.physics,
+  }) : super(
+          angles: angles,
+          heights: heights,
+          widths: widths,
+          physics: physics,
+        );
   // ignore: annotate_overrides, overridden_fields
   final List<double> angles;
   // ignore: annotate_overrides, overridden_fields
   final List<double> heights;
   // ignore: annotate_overrides, overridden_fields
   final List<double> widths;
+  // ignore: annotate_overrides, overridden_fields
+  final ScrollPhysics physics;
 
   @override
-  List<Object> get props => [angles];
+  List<Object> get props => [angles, heights, widths, physics];
+
   @override
   String toString() =>
-      'Rotated state { angles: $angles, heights: $heights, widths: $widths }';
+      'Rotated state { angles: $angles, heights: $heights, widths: $widths, physics: ${physics.toString()} }';
 }
 
 class EnlargedState extends SpinningWheelState {
@@ -63,19 +82,28 @@ class EnlargedState extends SpinningWheelState {
     required this.angles,
     required this.heights,
     required this.widths,
-  }) : super(angles: angles, heights: heights, widths: widths);
+    required this.physics,
+  }) : super(
+          angles: angles,
+          heights: heights,
+          widths: widths,
+          physics: physics,
+        );
   // ignore: annotate_overrides, overridden_fields
   final List<double> angles;
   // ignore: annotate_overrides, overridden_fields
   final List<double> heights;
   // ignore: annotate_overrides, overridden_fields
   final List<double> widths;
+  // ignore: annotate_overrides, overridden_fields
+  final ScrollPhysics physics;
 
   @override
-  List<Object> get props => [angles];
+  List<Object> get props => [angles, heights, widths, physics];
+
   @override
   String toString() =>
-      'Enlarged state { angles: $angles, heights: $heights, widths: $widths }';
+      'Enlarged state { angles: $angles, heights: $heights, widths: $widths, physics: ${physics.toString()} }';
 }
 
 class SpinningWheelCubit extends Cubit<SpinningWheelState> {
@@ -85,6 +113,7 @@ class SpinningWheelCubit extends Cubit<SpinningWheelState> {
             angles: List.filled(8, 0),
             heights: List.filled(8, double.maxFinite),
             widths: List.filled(8, 280),
+            physics: const FixedExtentScrollPhysics(),
           ),
         );
 
@@ -97,27 +126,64 @@ class SpinningWheelCubit extends Cubit<SpinningWheelState> {
   final List<double> _widths = List.filled(8, 280);
   List<double> get widths => _widths;
 
+  ScrollPhysics physics = const FixedExtentScrollPhysics();
+
   void rotateIn(int itemIndex) {
-    angles[itemIndex] = pi / 2;
-    emit(RotatedState(angles: angles, heights: heights, widths: widths));
+    if (state is StartState) {
+      angles[itemIndex] = pi / 2;
+      physics = const NeverScrollableScrollPhysics();
+      emit(
+        RotatedState(
+          angles: angles,
+          heights: heights,
+          widths: widths,
+          physics: physics,
+        ),
+      );
+    }
   }
 
   void zoomIn(int itemIndex) {
-    angles[itemIndex] = pi / 2;
-    heights[itemIndex] = double.maxFinite;
-    widths[itemIndex] = double.maxFinite;
-    emit(EnlargedState(angles: angles, heights: heights, widths: widths));
+    if (state is RotatedState) {
+      heights[itemIndex] = double.maxFinite;
+      widths[itemIndex] = double.maxFinite;
+      emit(
+        EnlargedState(
+          angles: angles,
+          heights: heights,
+          widths: widths,
+          physics: physics,
+        ),
+      );
+    }
   }
 
   void zoomOut(int itemIndex) {
-    angles[itemIndex] = pi / 2;
-    heights[itemIndex] = double.maxFinite;
-    widths[itemIndex] = 280;
-    emit(RotatedState(angles: angles, heights: heights, widths: widths));
+    if (state is EnlargedState) {
+      widths[itemIndex] = 280;
+      physics = const FixedExtentScrollPhysics();
+      emit(
+        RotatedState(
+          angles: angles,
+          heights: heights,
+          widths: widths,
+          physics: physics,
+        ),
+      );
+    }
   }
 
   void rotateOut(int itemIndex) {
-    angles[itemIndex] = 0;
-    emit(StartState(angles: angles, heights: heights, widths: widths));
+    if (state is RotatedState) {
+      angles[itemIndex] = 0;
+      emit(
+        StartState(
+          angles: angles,
+          heights: heights,
+          widths: widths,
+          physics: physics,
+        ),
+      );
+    }
   }
 }
