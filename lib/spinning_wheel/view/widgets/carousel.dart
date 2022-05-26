@@ -25,7 +25,6 @@ class Carousel extends StatelessWidget {
           final data = notification.metrics as FixedExtentMetrics;
           final itemIndex = data.itemIndex % 8;
           context.read<SpinningWheelCubit>().rotateIn(itemIndex);
-          context.read<SpinningWheelCubit>().zoomIn(itemIndex);
           return true;
         }
         return false;
@@ -62,15 +61,11 @@ class Carousel extends StatelessWidget {
             ),
           ),
         ),
-        //controller: FixedExtentScrollController(),
         physics: _physics,
-        //magnification: 1.8,
         perspective: 0.001,
-        //useMagnifier: true,
         squeeze: 0.96,
         diameterRatio: 1.3,
         clipBehavior: Clip.antiAlias,
-        //offAxisFraction: 0.5,
       ),
     );
   }

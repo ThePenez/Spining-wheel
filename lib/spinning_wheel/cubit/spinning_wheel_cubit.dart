@@ -77,34 +77,34 @@ class RotatedState extends SpinningWheelState {
       'Rotated state { angles: $angles, heights: $heights, widths: $widths, physics: ${physics.toString()} }';
 }
 
-class EnlargedState extends SpinningWheelState {
-  const EnlargedState({
-    required this.angles,
-    required this.heights,
-    required this.widths,
-    required this.physics,
-  }) : super(
-          angles: angles,
-          heights: heights,
-          widths: widths,
-          physics: physics,
-        );
-  // ignore: annotate_overrides, overridden_fields
-  final List<double> angles;
-  // ignore: annotate_overrides, overridden_fields
-  final List<double> heights;
-  // ignore: annotate_overrides, overridden_fields
-  final List<double> widths;
-  // ignore: annotate_overrides, overridden_fields
-  final ScrollPhysics physics;
+// class EnlargedState extends SpinningWheelState {
+//   const EnlargedState({
+//     required this.angles,
+//     required this.heights,
+//     required this.widths,
+//     required this.physics,
+//   }) : super(
+//           angles: angles,
+//           heights: heights,
+//           widths: widths,
+//           physics: physics,
+//         );
+//   // ignore: annotate_overrides, overridden_fields
+//   final List<double> angles;
+//   // ignore: annotate_overrides, overridden_fields
+//   final List<double> heights;
+//   // ignore: annotate_overrides, overridden_fields
+//   final List<double> widths;
+//   // ignore: annotate_overrides, overridden_fields
+//   final ScrollPhysics physics;
 
-  @override
-  List<Object> get props => [angles, heights, widths, physics];
+//   @override
+//   List<Object> get props => [angles, heights, widths, physics];
 
-  @override
-  String toString() =>
-      'Enlarged state { angles: $angles, heights: $heights, widths: $widths, physics: ${physics.toString()} }';
-}
+//   @override
+//   String toString() =>
+//       'Enlarged state { angles: $angles, heights: $heights, widths: $widths, physics: ${physics.toString()} }';
+// }
 
 class SpinningWheelCubit extends Cubit<SpinningWheelState> {
   SpinningWheelCubit()
@@ -143,35 +143,35 @@ class SpinningWheelCubit extends Cubit<SpinningWheelState> {
     }
   }
 
-  void zoomIn(int itemIndex) {
-    if (state is RotatedState) {
-      heights[itemIndex] = double.maxFinite;
-      widths[itemIndex] = double.maxFinite;
-      emit(
-        EnlargedState(
-          angles: angles,
-          heights: heights,
-          widths: widths,
-          physics: physics,
-        ),
-      );
-    }
-  }
+  // void zoomIn(int itemIndex) {
+  //   if (state is RotatedState) {
+  //     heights[itemIndex] = double.maxFinite;
+  //     widths[itemIndex] = double.maxFinite;
+  //     emit(
+  //       EnlargedState(
+  //         angles: angles,
+  //         heights: heights,
+  //         widths: widths,
+  //         physics: physics,
+  //       ),
+  //     );
+  //   }
+  // }
 
-  void zoomOut(int itemIndex) {
-    if (state is EnlargedState) {
-      widths[itemIndex] = 280;
-      physics = const FixedExtentScrollPhysics();
-      emit(
-        RotatedState(
-          angles: angles,
-          heights: heights,
-          widths: widths,
-          physics: physics,
-        ),
-      );
-    }
-  }
+  // void zoomOut(int itemIndex) {
+  //   if (state is EnlargedState) {
+  //     widths[itemIndex] = 280;
+  //     physics = const FixedExtentScrollPhysics();
+  //     emit(
+  //       RotatedState(
+  //         angles: angles,
+  //         heights: heights,
+  //         widths: widths,
+  //         physics: physics,
+  //       ),
+  //     );
+  //   }
+  // }
 
   void rotateOut(int itemIndex) {
     if (state is RotatedState) {
