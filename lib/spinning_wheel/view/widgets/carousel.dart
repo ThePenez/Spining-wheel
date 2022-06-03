@@ -21,13 +21,7 @@ class Carousel extends StatelessWidget {
 
     return NotificationListener<ScrollNotification>(
       onNotification: (notification) {
-        if (notification is ScrollEndNotification) {
-          final data = notification.metrics as FixedExtentMetrics;
-          final itemIndex = data.itemIndex % 8;
-          context.read<SpinningWheelCubit>().rotateIn(itemIndex);
-          return true;
-        }
-        return false;
+        return context.read<SpinningWheelCubit>().rotateCard(notification);
       },
       child: ListWheelScrollView.useDelegate(
         itemExtent: 155,

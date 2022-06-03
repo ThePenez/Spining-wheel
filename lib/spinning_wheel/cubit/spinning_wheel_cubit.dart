@@ -173,9 +173,23 @@ class SpinningWheelCubit extends Cubit<SpinningWheelState> {
   //   }
   // }
 
+  bool rotateCard(Notification notification) {
+    if (notification is ScrollEndNotification) {
+      final data = notification.metrics as FixedExtentMetrics;
+      final itemIndex = data.itemIndex % 8;
+      rotateIn(itemIndex);
+      Future.delayed(const Duration(milliseconds: 5000), () {
+        rotateOut(itemIndex);
+      });
+      return true;
+    }
+    return false;
+  }
+
   void rotateOut(int itemIndex) {
     if (state is RotatedState) {
       angles[itemIndex] = 0;
+      physics = const FixedExtentScrollPhysics();
       emit(
         StartState(
           angles: angles,
